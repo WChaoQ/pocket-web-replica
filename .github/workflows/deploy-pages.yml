@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - "index.html"
+      - "app.js"
+      - "data.js"
+      - "styles.css"
+      - ".nojekyll"
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
