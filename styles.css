@@ -253,3 +253,5 @@ main{background:var(--m3-bg)}
 .switch.on{background:var(--m3-primary-container);border-color:var(--m3-primary-container)}
 .switch.on span{transform:translateX(20px);background:var(--m3-on-primary-container)}
 @media(max-width:380px){.topbar.pocket-appbar{padding:0 8px;gap:5px}.topbar-title{font-size:18px;min-width:54px}.top-search{padding:0 8px}.topbar-controls{gap:0}.top-filter{width:36px;flex-basis:36px}.topbar-controls #addTopBtn{width:36px}}
+
+.app[data-page="settings"] .topbar-title{display:none}.app[data-page="settings"] .topbar-controls{justify-content:flex-end}
