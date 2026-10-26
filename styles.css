@@ -63,16 +63,17 @@ main{flex:1;min-height:0;overflow:hidden;padding-bottom:calc(63px + env(safe-are
 .recent-save-bottom{grid-column:1/3;grid-row:3;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px;min-height:36px}
 .recent-save-source{font-size:11px;color:var(--muted);font-weight:500;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-.article-list{padding:0 12px 16px}
+.article-list{padding:0 12px 8px}
 .article{
-  display:grid;grid-template-columns:minmax(0,1fr) 72px;grid-template-rows:auto 1fr auto;
-  gap:6px 10px;padding:12px;margin-bottom:10px;
-  border:1px solid var(--line);border-radius:8px;background:var(--surface);
+  display:grid;grid-template-columns:minmax(0,1fr) 88px;grid-template-rows:auto 1fr auto;
+  gap:6px 12px;padding:14px 4px 12px;margin-bottom:0;
+  border:0;border-bottom:1px solid var(--line);border-radius:0;background:transparent;
   cursor:pointer;align-items:start;position:relative;
 }
+.article:last-child{border-bottom:0}
 .article-body{min-width:0;display:contents}
 .article-title{
-  grid-column:1;grid-row:1/3;font-size:14px;line-height:1.3;font-weight:650;
+  grid-column:1;grid-row:1/3;font-size:15px;line-height:1.3;font-weight:650;
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink);
   margin:0;letter-spacing:-.1px;
 }
@@ -81,7 +82,7 @@ main{flex:1;min-height:0;overflow:hidden;padding-bottom:calc(63px + env(safe-are
   margin-top:4px;min-height:36px;padding-top:0;
 }
 .article .source{font-size:11px;color:var(--muted);font-weight:500;margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.article .thumb{grid-column:2;grid-row:1/3;width:72px;height:52px;object-fit:cover;border-radius:4px;background:var(--soft);align-self:start;margin-top:0}
+.article .thumb{grid-column:2;grid-row:1/3;width:88px;height:60px;object-fit:cover;border-radius:4px;background:var(--soft);align-self:start;margin-top:2px}
 .article-discover .article-bottom{justify-content:space-between}
 .article-discover .link-icon{
   width:36px;height:36px;border:0;border-radius:50%;background:transparent;
@@ -207,8 +208,8 @@ main{flex:1;min-height:0;overflow:hidden;padding-bottom:calc(63px + env(safe-are
 }
 @media(max-width:390px){
   .recent-save-card{flex-basis:268px;width:268px}
-  .article{grid-template-columns:minmax(0,1fr) 68px}
-  .article .thumb{width:68px;height:48px}
+  .article{grid-template-columns:minmax(0,1fr) 80px}
+  .article .thumb{width:80px;height:54px}
   .section-label{font-size:17px}
 }
 @media(prefers-reduced-motion:reduce){
