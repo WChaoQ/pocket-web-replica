@@ -294,6 +294,7 @@ document.querySelectorAll(".setting").forEach(el=>el.onclick=e=>{
   const x=el.dataset.setting;
   if(!x||e.target.closest(".switch"))return;
   if(x==="theme"){systemTheme=false;dark=!dark;syncSwitches();applyTheme();toast("主题已切换")}
+  else if(x==="openBrowser"){$("#readerOriginal").click()}
   else if(x==="notifications"){
     sheet("设备通知设置",'<p style="line-height:1.7;color:var(--muted)">网页预览无法直接打开系统设置。</p><button class="primary" id="aboutOkay">知道了</button>');
     $("#aboutOkay").onclick=closeSheet;
