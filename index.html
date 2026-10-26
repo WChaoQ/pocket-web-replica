@@ -64,7 +64,11 @@ main{flex:1;min-height:0;overflow:hidden;padding-bottom:calc(63px + env(safe-are
 #page-home .feature{margin-top:0}
 #page-home .article-list{padding-bottom:20px}
 @media(max-width:390px){.recent-save-card{flex-basis:292px;width:292px}.home-title{padding-left:16px}.recent-saves-track{padding-left:16px}.library-overview{margin-left:16px;margin-right:16px}}
-.sheet-subhead{padding:12px 4px 5px;font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);font-weight:700}.sheet-row input{accent-color:var(--red);margin-right:10px}</style></head><body>
+.sheet-subhead{padding:12px 4px 5px;font-size:11px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);font-weight:700}.sheet-row input{accent-color:var(--red);margin-right:10px}
+/* Android source dimension: bottom navigation is 63dp */
+.nav{height:calc(63px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+@media(min-width:700px){.nav{height:63px;padding-bottom:env(safe-area-inset-bottom)}}
+</style></head><body>
 <div class="app" id="app">
 <div class="status"><span id="clock">09:41</span><div class="status-right"><span>5G</span><span class="signal"><i></i><i></i><i></i><i></i></span><span class="battery"></span></div></div>
 <header class="topbar pocket-appbar"><div class="topbar-brand" id="topbarBrand" hidden>Pocket</div><div class="appbar-tabs"><button class="pocket-tab active" id="savesTab"><svg viewBox="0 0 24 24"><path d="M4 5h16v3H4zM6 8v12h12V8m-8 4h4"/></svg>Saves</button><button class="pocket-tab" id="archiveTab"><svg viewBox="0 0 24 24"><path d="M4 4h16v4H4zM6 8v12h12V8m-8 4h4"/></svg>Archive</button></div><button class="icon" id="addTopBtn" aria-label="Add save"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button></header>
