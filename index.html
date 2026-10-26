@@ -74,8 +74,7 @@
     <div class="recent-saves-track" id="recentSavesList"></div>
   </section>
   <div class="section-row home-popular-heading">
-    <span class="section-label">编辑精选</span>
-    <button class="text-btn" id="seeAll">查看全部</button>
+    <span class="section-label">AI精选</span>
   </div>
   <div class="feature" id="featureCard">
     <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=80" alt="">
@@ -104,15 +103,10 @@
       </div>
     </div>
     <div class="group"><h3>阅读</h3>
-      <div class="setting setting-switch" data-setting="openBrowser">
-        <span class="setting-icon"><span class="material-symbols-outlined">open_in_new</span></span>
-        <div class="setting-main"><div class="setting-title">在浏览器中打开原始网站</div><div class="setting-sub">从阅读界面打开原网页</div></div>
-        <button class="switch on" id="openBrowserToggle" type="button" aria-pressed="true" aria-label="在浏览器中打开原始网站"><span></span></button>
-      </div>
-      <div class="setting setting-switch" data-setting="readerArrows">
-        <span class="setting-icon"><span class="material-symbols-outlined">swap_horiz</span></span>
-        <div class="setting-main"><div class="setting-title">显示上一个和下一个箭头</div><div class="setting-sub">在阅读时显示文章切换按钮</div></div>
-        <button class="switch on" id="readerArrowsToggle" type="button" aria-pressed="true" aria-label="显示上一个和下一个箭头"><span></span></button>
+      <div class="setting" data-setting="openBrowser">
+        <span class="setting-icon"><span class="material-symbols-outlined">open_in_browser</span></span>
+        <div class="setting-main"><div class="setting-title">在浏览器中打开原始网站</div><div class="setting-sub" id="browserChoiceLabel">点击选择打开原链接的浏览器</div></div>
+        <span class="trailing material-symbols-outlined">chevron_right</span>
       </div>
     </div>
     <div class="group"><h3>通知</h3>
@@ -159,18 +153,19 @@
 <div class="reader" id="reader" role="dialog" aria-modal="true">
   <div class="reader-top">
     <button class="icon" id="readerBack" aria-label="Back"><span class="material-symbols-outlined">arrow_back</span></button>
-    <button class="icon reader-nav-arrow" id="readerPrev" aria-label="上一篇"><span class="material-symbols-outlined">chevron_left</span></button>
-    <button class="icon reader-nav-arrow" id="readerNext" aria-label="下一篇"><span class="material-symbols-outlined">chevron_right</span></button>
+    <div class="reader-actions reader-actions-leading">
+      <button class="icon" id="readerShareTop" aria-label="分享"><span class="material-symbols-outlined">share</span></button>
+      <button class="icon" id="readerOriginal" aria-label="打开原链接"><span class="material-symbols-outlined">open_in_new</span></button>
+    </div>
     <div class="reader-actions">
-      <button class="icon" id="readerSave" aria-label="Favorite"><span class="material-symbols-outlined" id="readerSaveIcon">favorite</span></button>
-      <button class="icon" id="readerMore" aria-label="Reader settings"><span class="material-symbols-outlined">tune</span></button>
+      <button class="icon" id="readerSave" aria-label="收藏"><span class="material-symbols-outlined" id="readerSaveIcon">favorite</span></button>
     </div>
   </div>
   <article class="reader-content" id="readerContent"></article>
   <div class="reader-toolbar">
-    <button class="reader-tool" id="readerText"><span class="material-symbols-outlined">format_size</span><span>Text settings</span></button>
-    <button class="reader-tool" id="readerListen"><span class="material-symbols-outlined">headphones</span><span>Listen</span></button>
-    <button class="reader-tool" id="readerShare"><span class="material-symbols-outlined">share</span><span>Share</span></button>
+    <button class="reader-tool reader-prev-tool" id="readerPrev" aria-label="上一篇"><span class="material-symbols-outlined">skip_previous</span><span>上一个</span></button>
+    <button class="reader-tool reader-listen-tool" id="readerListen"><span class="material-symbols-outlined">headphones</span><span>Listen</span></button>
+    <button class="reader-tool reader-next-tool" id="readerNext" aria-label="下一篇"><span class="material-symbols-outlined">skip_next</span><span>下一个</span></button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
