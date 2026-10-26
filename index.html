@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#191919">
 <title>Pocket — Android UI replica</title>
-<link rel="stylesheet" href="styles.css?v=d9e1f04">
+<link rel="stylesheet" href="styles.css?v=d9e1f06">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
 <style>
 .material-symbols-outlined {
@@ -97,16 +97,16 @@
         <span class="trailing" id="themeLabel">深色</span>
       </div>
       <div class="setting setting-switch" data-setting="systemTheme">
-        <span class="setting-icon"><span class="material-symbols-outlined">devices</span></span>
-        <div class="setting-main"><div class="setting-title">匹配系统主题</div><div class="setting-sub">跟随设备的浅色或深色模式</div></div>
-        <button class="switch" id="systemThemeToggle" type="button" aria-pressed="false" aria-label="匹配系统主题"><span></span></button>
+        <span class="setting-icon"><span class="material-symbols-outlined">palette</span></span>
+        <div class="setting-main"><div class="setting-title">动态主题</div><div class="setting-sub">根据壁纸取色生成界面配色</div></div>
+        <button class="switch" id="systemThemeToggle" type="button" aria-pressed="false" aria-label="动态主题"><span></span></button>
       </div>
     </div>
     <div class="group"><h3>阅读</h3>
-      <div class="setting setting-switch" data-setting="openBrowser">
+      <div class="setting" data-setting="openBrowser">
         <span class="setting-icon"><span class="material-symbols-outlined">open_in_new</span></span>
-        <div class="setting-main"><div class="setting-title">在浏览器中打开原始网站</div><div class="setting-sub">点击原链接时使用系统浏览器打开</div></div>
-        <button class="switch on" id="openBrowserToggle" type="button" aria-pressed="true" aria-label="在浏览器中打开原始网站"><span></span></button>
+        <div class="setting-main"><div class="setting-title">在以下浏览器中打开原网站</div><div class="setting-sub" id="browserLabel">系统默认浏览器</div></div>
+        <span class="trailing material-symbols-outlined" style="font-size:18px">chevron_right</span>
       </div>
     </div>
     <div class="group"><h3>通知</h3>
@@ -154,7 +154,6 @@
   <div class="reader-top">
     <button class="icon" id="readerBack" aria-label="Back"><span class="material-symbols-outlined">arrow_back</span></button>
     <div class="reader-actions">
-      <button class="icon" id="readerShare" aria-label="分享"><span class="material-symbols-outlined">share</span></button>
       <button class="icon" id="readerOriginal" aria-label="原链接"><span class="material-symbols-outlined">open_in_new</span></button>
       <button class="icon" id="readerSave" aria-label="收藏"><span class="material-symbols-outlined" id="readerSaveIcon">favorite</span></button>
       <button class="icon" id="readerMore" aria-label="阅读设置"><span class="material-symbols-outlined">tune</span></button>
@@ -163,14 +162,14 @@
   <article class="reader-content" id="readerContent"></article>
   <div class="reader-toolbar">
     <button class="reader-tool" id="readerPrev" aria-label="上一篇"><span class="material-symbols-outlined">chevron_left</span><span>上一个</span></button>
-    <button class="reader-tool" id="readerListen"><span class="material-symbols-outlined">headphones</span><span>Listen</span></button>
+    <button class="reader-tool" id="readerTranslate"><span class="material-symbols-outlined">translate</span><span>翻译</span></button>
     <button class="reader-tool" id="readerNext" aria-label="下一篇"><span class="material-symbols-outlined">chevron_right</span><span>下一个</span></button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
 </div>
 <div class="desktop-note"><strong>Pocket interface study</strong>A responsive prototype focused on original Android screen structure and interactions. Demo content only; no account or sync.</div>
-<script src="data.js?v=d9e1f04"></script>
-<script src="app.js?v=d9e1f04"></script>
+<script src="data.js?v=d9e1f06"></script>
+<script src="app.js?v=d9e1f06"></script>
 </body>
 </html>
