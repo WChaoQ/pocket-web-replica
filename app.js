@@ -12,9 +12,6 @@ function toast(s){const t=$("#toast");t.textContent=s;t.classList.add("show");cl
 function favoriteButton(a){
   return '<button class="mini '+(a.favorite?'saved':'')+'" data-action="favorite" data-id="'+a.id+'" aria-label="收藏" title="收藏">'+heart(!!a.favorite)+'</button>';
 }
-function addLinkButton(a){
-  return '<button class="mini add-link-icon" data-action="add-link" data-id="'+a.id+'" aria-label="加入到保存内容" title="加入到保存内容"><span class="material-symbols-outlined">add_link</span></button>';
-}
 function moreButton(a){
   return '<button class="mini" data-action="more" data-id="'+a.id+'" aria-label="更多选项" title="更多选项">'+moreIcon+'</button>';
 }
@@ -79,7 +76,6 @@ function render(){
         '<h2 class="article-title">'+esc(a.title)+'</h2>'+ 
         '<div class="article-bottom">'+ 
           '<div class="source">'+esc(a.source)+'</div>'+ 
-          '<div class="tools">'+favoriteButton(a)+moreButton(a)+addLinkButton(a)+'</div>'+
         '</div>'+ 
       '</div>'+ 
       '<img class="thumb" src="'+a.image+'" alt="" loading="lazy">'+ 
@@ -189,7 +185,6 @@ function action(type,id){
   const a=articles.find(x=>x.id===Number(id));
   if(!a)return;
   if(type==="favorite"){a.favorite=!a.favorite;toast(a.favorite?"已加入收藏":"已取消收藏");render()}
-  else if(type==="add-link"){toast("已加入保存内容")}
   else if(type==="more"){
     sheet("选项",
       '<div class="sheet-row" data-story="open">打开文章</div>'+
@@ -249,22 +244,14 @@ $("#sheetBody").addEventListener("click",e=>{
   if(e.target.id==="readerTheme"){dark=!dark;applyTheme();e.target.textContent=dark?"切换浅色":"切换深色"}
 });
 $("#readerListen").onclick=()=>toast("音频播放不在本原型范围内");
-function articleUrl(){return activeArticle?.url||"https://example.com";}
-function shareArticle(){
-  if(navigator.share&&activeArticle)navigator.share({title:activeArticle.title,url:articleUrl()}).catch(()=>{});
+$("#readerText").onclick=()=>$("#readerMore").click();
+$("#readerMore").onclick=()=>sheet("阅读设置",
+  '<div class="sheet-row"><span style="flex:1">字号</span><button class="chip" id="fontDown">A−</button><button class="chip" id="fontUp">A+</button></div>'+
+  '<div class="sheet-row"><span style="flex:1">主题</span><button class="chip" id="readerTheme">切换深色</button></div>'+
+  '<button class="primary" id="readerDone">完成</button>');
+$("#readerShare").onclick=()=>{
+  if(navigator.share&&activeArticle)navigator.share({title:activeArticle.title,url:"https://example.com"}).catch(()=>{});
   else toast("分享预览");
-}
-$("#readerShareTop").onclick=shareArticle;
-$("#readerOriginal").onclick=()=>{
-  sheet("打开原链接",'<p style="color:var(--muted);line-height:1.6">选择用于打开原始网页的浏览器（网页预览仅展示选择交互）。</p>'+
-    '<button class="sheet-row browser-choice" data-browser="系统默认浏览器">系统默认浏览器</button>'+
-    '<button class="sheet-row browser-choice" data-browser="Chrome">Chrome</button>'+
-    '<button class="sheet-row browser-choice" data-browser="其他浏览器">其他浏览器</button>');
-  document.querySelectorAll(".browser-choice").forEach(b=>b.onclick=()=>{
-    $("#browserChoiceLabel").textContent=b.dataset.browser;
-    closeSheet();
-    window.open(articleUrl(),"_blank","noopener");
-  });
 };
 
 function applyTheme(){
@@ -281,7 +268,7 @@ function applyTheme(){
 }
 
 function syncSwitches(){
-  [["systemThemeToggle",systemTheme]].forEach(([id,on])=>{
+  [["systemThemeToggle",systemTheme],["openBrowserToggle",openBrowser],["readerArrowsToggle",readerArrows]].forEach(([id,on])=>{
     const b=$("#"+id);
     if(!b)return;
     b.classList.toggle("on",on);
@@ -294,7 +281,6 @@ document.querySelectorAll(".setting").forEach(el=>el.onclick=e=>{
   const x=el.dataset.setting;
   if(!x||e.target.closest(".switch"))return;
   if(x==="theme"){systemTheme=false;dark=!dark;syncSwitches();applyTheme();toast("主题已切换")}
-  else if(x==="openBrowser"){$("#readerOriginal").click()}
   else if(x==="notifications"){
     sheet("设备通知设置",'<p style="line-height:1.7;color:var(--muted)">网页预览无法直接打开系统设置。</p><button class="primary" id="aboutOkay">知道了</button>');
     $("#aboutOkay").onclick=closeSheet;
@@ -304,6 +290,14 @@ document.querySelectorAll(".setting").forEach(el=>el.onclick=e=>{
   }
 });
 
+$("#openBrowserToggle").onclick=e=>{e.stopPropagation();openBrowser=!openBrowser;syncSwitches()};
+$("#readerArrowsToggle").onclick=e=>{
+  e.stopPropagation();
+  readerArrows=!readerArrows;
+  syncSwitches();
+  $("#readerPrev").style.display=readerArrows?"grid":"none";
+  $("#readerNext").style.display=readerArrows?"grid":"none";
+};
 $("#systemThemeToggle").onclick=e=>{
   e.stopPropagation();
   systemTheme=!systemTheme;
