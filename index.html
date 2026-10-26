@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#191919"><title>Pocket — Android UI replica</title>
-<link rel="stylesheet" href="styles.css"></head><body>
+<link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=add_link"></head><body>
 <div class="app demo-mode" id="app" data-page="home">
 <div class="status"><span id="clock">09:41</span><div class="status-right"><span>5G</span><span class="signal"><i></i><i></i><i></i><i></i></span><span class="battery"></span></div></div>
 <header class="topbar pocket-appbar">
 <div class="topbar-title" id="topbarTitle">主页</div>
 <div class="topbar-controls">
-<label class="top-search" aria-label="搜索保存内容"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input id="searchInput" placeholder="搜索保存内容" autocomplete="off"><button class="search-clear" id="clearSearch" aria-label="清除搜索">×</button></label>
+<button class="icon top-search-button" id="searchBtn" aria-label="搜索"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
 <button class="icon top-filter" id="filterBtn" aria-label="筛选"><svg viewBox="0 0 24 24"><path d="M4 6h16M7 12h10m-7 6h4"/></svg></button>
 <button class="icon" id="addTopBtn" aria-label="添加保存"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 </div></header>
 <main>
 <section class="page" id="page-saves">
 
-<div class="chips pocket-carousel" id="saveChips"><button class="chip selected" data-filter="all">全部</button><button class="chip" data-filter="tagged"><svg viewBox="0 0 24 24"><path d="M20 13 13 20 3 10V4h6Z"/></svg>已标记</button><button class="chip" data-filter="favorites"><svg viewBox="0 0 24 24"><path d="m12 20-7-7a4.5 4.5 0 0 1 6.4-6.3L12 7.3l.6-.6A4.5 4.5 0 0 1 19 13Z"/></svg>收藏</button><button class="chip" data-filter="highlights">编辑精选</button><button class="chip" data-filter="notes">笔记</button></div>
+
 <div hidden><span id="listLabel">All saves</span><button id="sortBtn" type="button">Sort</button></div><div class="saves-empty"><svg class="empty-books" viewBox="0 0 320 100" aria-hidden="true"><path d="M12 77H308" stroke="#b8b8b8" stroke-width="2"/><g stroke-linejoin="round" stroke-width="1.5"><path d="M40 76V32l16-5 9 49Z" fill="#12b9b1"/><path d="M53 76V23l14 3 7 50Z" fill="#f34c70"/><path d="M72 76V37l18-6 8 45Z" fill="#f4b43e"/><path d="M92 76V19l16 4 6 53Z" fill="#a4e5df"/><path d="M117 76V34l18-6 6 48Z" fill="#f34c70"/><path d="M141 76V24l14 3 8 49Z" fill="#ffc34c"/><path d="m177 76-12-26 18-18 21 6 7 19-19 18Z" fill="#f34c70"/><path d="m180 49 9 8 15-17" fill="none" stroke="#191919" stroke-width="5"/><path d="M215 76 231 20l14 6-14 50Z" fill="#12b9b1"/><path d="M230 76 249 31l12 5-19 40Z" fill="#f4b43e"/><path d="M250 76V43l40 2v31Z" fill="#a4e5df"/><path d="M250 76V58l38 1v17Z" fill="#f34c70"/></g></svg><h2>开始建立您的 Pocket 列表</h2><p>保存您想稍后阅读的文章、视频和网页。</p><button class="empty-login" data-login>注册或登录</button></div><div class="article-list" id="articleList"></div></section>
 <div hidden aria-hidden="true"><button id="savesTab"></button><button id="archiveTab"></button><button id="searchToggle"></button><div id="searchWrap" hidden></div><button id="moreBtn"></button></div><div hidden aria-hidden="true"><span id="savesSubtitle"></span><span id="homeSavesCount"></span><span id="homeArchiveCount"></span><span id="settingsSavesCount"></span><span id="settingsArchiveCount"></span><span id="homeSavesExample"></span><span id="homeArchiveExample"></span></div>
 <section class="page active" id="page-home">
