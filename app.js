@@ -5,8 +5,8 @@ const moreIcon = icon('more_horiz');
 let page="home",filter="all",newest=true,sortMode="newest",viewedFilter="any",readLengthFilter="any",dateFilter="any",favoritesOnly=false,activeArticle=null,dark=true,systemTheme=false,openBrowser=true,fontSize=18,toastTimer,editMode=false;
 const selectedIds=new Set();
 const readMinutes=a=>{const m=String(a.date||"").match(/(\d+)\s*min read/i);return m?Number(m[1]):0};
-const $=s=>document.querySelector(s), esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&","<":"<",">":">",'"':""","'":"&#39;"}[c]));
-const imgTag=(src,cls)=>'<img'+(cls?' class="'+cls+'"':'')+' src="'+src+'" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'https://images.unsplash.com/photo-1455390582262-044c029bcca8?auto=format&fit=crop&w=500&q=80\'">';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">").replace(/"/g,""").replace(/'/g,"&#39;");
 
 function toast(s){const t=$("#toast");if(!t)return;t.textContent=s;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2000)}
 
@@ -39,14 +39,17 @@ function render(){
 
   const listLabel=$("#listLabel"); if(listLabel) listLabel.textContent=filter==="all"?"全部内容":filter==="favorites"?"收藏":filter==="highlights"?"AI精选":filter==="notes"?"笔记":"全部内容";
   const ss=$("#savesSubtitle"); if(ss) ss.textContent=articles.length+" stories saved for later";
-  [["#homeSavesCount",articles.length],["#homeArchiveCount",0],["#settingsSavesCount",articles.length],["#settingsArchiveCount",0]].forEach(([sel,v])=>{const el=$(sel); if(el) el.textContent=v;});
+  const hsc=$("#homeSavesCount"); if(hsc) hsc.textContent=articles.length;
+  const hac=$("#homeArchiveCount"); if(hac) hac.textContent=0;
+  const ssc=$("#settingsSavesCount"); if(ssc) ssc.textContent=articles.length;
+  const sac=$("#settingsArchiveCount"); if(sac) sac.textContent=0;
   const hse=$("#homeSavesExample"); if(hse) hse.textContent=articles[0]?.title||"暂无保存内容";
   const hae=$("#homeArchiveExample"); if(hae) hae.textContent="";
 
   const recentEl=$("#recentSavesList");
   if(recentEl) recentEl.innerHTML=articles.slice(0,5).map(a=>
     '<article class="recent-save-card" data-open="'+a.id+'">'+ 
-      imgTag(a.image)+ 
+      '<img src="'+a.image+'" alt="" loading="lazy">'+ 
       '<div class="recent-save-title">'+esc(a.title)+'</div>'+ 
       '<div class="recent-save-bottom">'+ 
         '<div class="recent-save-source">'+esc(a.source)+'</div>'+ 
@@ -57,7 +60,7 @@ function render(){
 
   const card=a=>
     '<article class="article" data-open="'+a.id+'">'+ 
-      imgTag(a.image,'thumb')+ 
+      '<img class="thumb" src="'+a.image+'" alt="" loading="lazy">'+ 
       '<h2 class="article-title">'+esc(a.title)+'</h2>'+ 
       '<div class="article-bottom">'+ 
         '<div class="source">'+esc(a.source)+'</div>'+ 
@@ -71,7 +74,7 @@ function render(){
   const discEl=$("#discoverList");
   if(discEl) discEl.innerHTML=articles.slice(1,11).map(a=>
     '<article class="article article-discover" data-open="'+a.id+'">'+ 
-      imgTag(a.image,'thumb')+ 
+      '<img class="thumb" src="'+a.image+'" alt="" loading="lazy">'+ 
       '<h2 class="article-title">'+esc(a.title)+'</h2>'+ 
       '<div class="article-bottom">'+ 
         '<div class="source">'+esc(a.source)+'</div>'+ 
@@ -166,7 +169,7 @@ function openReader(id){
     '<div class="reader-source">'+esc(activeArticle.source)+'</div>'+
     '<h1>'+esc(activeArticle.title)+'</h1>'+
     '<div class="reader-byline">By '+esc(activeArticle.author||"Pocket reader")+' · '+esc(activeArticle.date)+'</div>'+
-    '<img class="reader-hero" src="'+activeArticle.image+'" alt="" onerror="this.style.display=\'none\'">'+ 
+    '<img class="reader-hero" src="'+activeArticle.image+'" alt="">'+ 
     '<p class="lead">'+esc(activeArticle.desc)+'</p>'+
     '<p>There is a particular pleasure in giving an interesting idea a little more room. Away from the rush of notifications and open tabs, a good story can unfold at its own pace.</p>'+
     '<p>Curiosity is often less about finding the quickest answer and more about learning which questions are worth carrying with us.</p>'+
@@ -242,8 +245,8 @@ const readerSave=$("#readerSave"); if(readerSave) readerSave.onclick=()=>{
 const sheetBody=$("#sheetBody");
 if(sheetBody) sheetBody.addEventListener("click",e=>{
   if(e.target.id==="readerDone")closeSheet();
-  if(e.target.id==="fontDown"){fontSize=Math.max(14,fontSize-1);$("#readerContent")&&$("#readerContent").querySelectorAll("p").forEach(p=>p.style.fontSize=fontSize+"px")}
-  if(e.target.id==="fontUp"){fontSize=Math.min(26,fontSize+1);$("#readerContent")&&$("#readerContent").querySelectorAll("p").forEach(p=>p.style.fontSize=fontSize+"px")}
+  if(e.target.id==="fontDown"){fontSize=Math.max(14,fontSize-1);const rc=$("#readerContent"); if(rc) rc.querySelectorAll("p").forEach(p=>p.style.fontSize=fontSize+"px")}
+  if(e.target.id==="fontUp"){fontSize=Math.min(26,fontSize+1);const rc=$("#readerContent"); if(rc) rc.querySelectorAll("p").forEach(p=>p.style.fontSize=fontSize+"px")}
   if(e.target.id==="readerTheme"){dark=!dark;applyTheme();e.target.textContent=dark?"切换浅色":"切换深色"}
 });
 const readerListen=$("#readerListen"); if(readerListen) readerListen.onclick=()=>toast("音频播放不在本原型范围内");
@@ -257,11 +260,7 @@ const readerShare=$("#readerShare"); if(readerShare) readerShare.onclick=()=>{
 };
 const readerOriginal=$("#readerOriginal"); if(readerOriginal) readerOriginal.onclick=()=>{
   if(!activeArticle)return;
-  if(openBrowser){
-    toast("已在浏览器中打开原链接");
-  }else{
-    toast("已在应用内打开原链接");
-  }
+  toast(openBrowser?"已在浏览器中打开原链接":"已在应用内打开原链接");
 };
 
 function applyTheme(){
@@ -320,12 +319,5 @@ document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){closeSheet();const r=$("#reader"); if(r) r.classList.remove("open")}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();setPage("saves");const sb=$("#searchBtn"); if(sb) sb.click()}
 });
-const clock=$("#clock"); if(clock) clock.textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false});
-try{
-  syncSwitches();
-  applyTheme();
-  setPage("home");
-}catch(err){
-  console.error("Pocket init error", err);
-  toast("界面初始化异常，请刷新页面");
-}
+const clockEl=$("#clock"); if(clockEl) clockEl.textContent=new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit",hour12:false});
+try{ syncSwitches(); applyTheme(); setPage("home"); }catch(err){ console.error(err); }
