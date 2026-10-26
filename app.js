@@ -2,7 +2,8 @@ const icon = (name, filled) => '<span class="material-symbols-outlined'+(filled?
 const heart = (filled) => icon('favorite', filled);
 const moreIcon = icon('more_horiz');
 
-let page="home",filter="all",newest=true,sortMode="newest",viewedFilter="any",readLengthFilter="any",dateFilter="any",favoritesOnly=false,activeArticle=null,dark=true,systemTheme=false,openBrowser=true,fontSize=18,toastTimer,editMode=false;
+let page="home",filter="all",newest=true,sortMode="newest",viewedFilter="any",readLengthFilter="any",dateFilter="any",favoritesOnly=false,activeArticle=null,dark=true,systemTheme=false,selectedBrowser="系统默认浏览器",fontSize=18,toastTimer,editMode=false;
+const browserOptions=["系统默认浏览器","Chrome","Firefox","Edge","Safari","Opera"];
 const selectedIds=new Set();
 const readMinutes=a=>{const m=String(a.date||"").match(/(\d+)\s*min read/i);return m?Number(m[1]):0};
 const $=s=>document.querySelector(s); const esc=s=>String(s).split("&").join(String.fromCharCode(38)+"amp;").split("<").join(String.fromCharCode(38)+"lt;").split(">").join(String.fromCharCode(38)+"gt;").split('"').join(String.fromCharCode(38)+"quot;").split("'").join(String.fromCharCode(38)+"#39;");
@@ -74,7 +75,7 @@ function render(){
       '<h2 class="article-title">'+esc(a.title)+'</h2>'+ 
       '<div class="article-bottom">'+ 
         '<div class="source">'+esc(a.source)+'</div>'+ 
-        '<button class="link-icon" data-action="addlink" data-id="'+a.id+'" aria-label="添加链接" title="添加链接">'+icon('add_link')+'</button>'+ 
+        '<button class="link-icon" data-action="addlink" data-id="'+a.id+'" aria-label="收藏" title="收藏">'+icon('bookmark')+'</button>'+ 
       '</div>'+ 
     '</article>'
   ).join("");
@@ -182,7 +183,7 @@ function action(type,id){
   const a=articles.find(x=>x.id===Number(id));
   if(!a)return;
   if(type==="favorite"){a.favorite=!a.favorite;toast(a.favorite?"已加入收藏":"已取消收藏");render()}
-  else if(type==="addlink"){toast("已添加链接到保存内容（演示）")}
+  else if(type==="addlink"){a.favorite=!a.favorite;toast(a.favorite?"已加入收藏":"已取消收藏");render()}
   else if(type==="more"){
     sheet("选项",
       '<div class="sheet-row" data-story="open">打开文章</div>'+
@@ -241,18 +242,15 @@ $("#sheetBody").addEventListener("click",e=>{
   if(e.target.id==="fontUp"){fontSize=Math.min(26,fontSize+1);$("#readerContent").querySelectorAll("p").forEach(p=>p.style.fontSize=fontSize+"px")}
   if(e.target.id==="readerTheme"){dark=!dark;applyTheme();e.target.textContent=dark?"切换浅色":"切换深色"}
 });
-$("#readerListen").onclick=()=>toast("音频播放不在本原型范围内");
+const readerTranslate=$("#readerTranslate");
+if(readerTranslate) readerTranslate.onclick=()=>toast("翻译功能为演示提示");
 $("#readerMore").onclick=()=>sheet("阅读设置",
   '<div class="sheet-row"><span style="flex:1">字号</span><button class="chip" id="fontDown">A−</button><button class="chip" id="fontUp">A+</button></div>'+
   '<div class="sheet-row"><span style="flex:1">主题</span><button class="chip" id="readerTheme">切换深色</button></div>'+
   '<button class="primary" id="readerDone">完成</button>');
-$("#readerShare").onclick=()=>{
-  if(navigator.share&&activeArticle)navigator.share({title:activeArticle.title,url:"https://example.com"}).catch(()=>{});
-  else toast("分享预览");
-};
 $("#readerOriginal").onclick=()=>{
   if(!activeArticle)return;
-  toast(openBrowser?"已在浏览器中打开原链接":"已在应用内打开原链接");
+  toast("已用 "+selectedBrowser+" 打开原链接");
 };
 
 function applyTheme(){
@@ -263,45 +261,58 @@ function applyTheme(){
   root.style.setProperty("--ink",dark?"#e0e5e3":"#191d1c");
   root.style.setProperty("--muted",dark?"#aab5b2":"#5f6966");
   root.style.setProperty("--line",dark?"#3d4946":"#dce5e1");
-  root.style.setProperty("--m3-primary",dark?"#a8dcd5":"#006a62");
-  document.querySelector('meta[name="theme-color"]').content=dark?"#101918":"#f7fbf9";
-  $("#themeLabel").textContent=systemTheme?"跟随系统":dark?"深色":"浅色";
+  const accent=systemTheme?(dark?"#7dcea0":"#1b7a4a"):(dark?"#a8dcd5":"#006a62");
+  root.style.setProperty("--m3-primary",accent);
+  root.style.setProperty("--green",systemTheme?accent:"#00877f");
+  root.style.setProperty("--red",systemTheme?accent:"#00877f");
+  const meta=document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.content=dark?"#101918":"#f7fbf9";
+  const tl=$("#themeLabel"); if(tl) tl.textContent=systemTheme?"动态":dark?"深色":"浅色";
 }
 
 function syncSwitches(){
-  [["systemThemeToggle",systemTheme],["openBrowserToggle",openBrowser]].forEach(([id,on])=>{
-    const b=$("#"+id);
-    if(!b)return;
-    b.classList.toggle("on",on);
-    b.setAttribute("aria-pressed",String(on));
-  });
-  $("#themeLabel").textContent=systemTheme?"跟随系统":dark?"深色":"浅色";
+  const b=$("#systemThemeToggle");
+  if(b){ b.classList.toggle("on",systemTheme); b.setAttribute("aria-pressed",String(systemTheme)); }
+  const tl=$("#themeLabel"); if(tl) tl.textContent=systemTheme?"动态":dark?"深色":"浅色";
+  const bl=$("#browserLabel"); if(bl) bl.textContent=selectedBrowser;
+}
+
+function browserSheet(){
+  const rows=browserOptions.map(name=>
+    '<label class="sheet-row"><input type="radio" name="browserPick" value="'+name+'" '+(selectedBrowser===name?"checked":"")+'>'+name+'</label>'
+  ).join("");
+  sheet("选择浏览器",
+    '<div class="sheet-subhead">打开原链接时使用</div>'+rows+
+    '<button class="primary" id="applyBrowser">确定</button>');
+  const ab=$("#applyBrowser");
+  if(ab) ab.onclick=()=>{
+    const picked=document.querySelector('input[name="browserPick"]:checked');
+    if(picked){ selectedBrowser=picked.value; syncSwitches(); toast("已选择 "+selectedBrowser); }
+    closeSheet();
+  };
 }
 
 document.querySelectorAll(".setting").forEach(el=>el.onclick=e=>{
   const x=el.dataset.setting;
   if(!x||e.target.closest(".switch"))return;
   if(x==="theme"){systemTheme=false;dark=!dark;syncSwitches();applyTheme();toast("主题已切换")}
+  else if(x==="openBrowser"){ browserSheet(); }
   else if(x==="notifications"){
     sheet("设备通知设置",'<p style="line-height:1.7;color:var(--muted)">网页预览无法直接打开系统设置。</p><button class="primary" id="aboutOkay">知道了</button>');
-    $("#aboutOkay").onclick=closeSheet;
+    const ao=$("#aboutOkay"); if(ao) ao.onclick=closeSheet;
   }else if(x==="version"){
     sheet("版本信息",'<div class="sheet-row"><span>应用</span><strong style="margin-left:auto">Pocket UI</strong></div><div class="sheet-row"><span>版本</span><strong style="margin-left:auto">1.0.0</strong></div><button class="primary" id="aboutOkay">关闭</button>');
-    $("#aboutOkay").onclick=closeSheet;
+    const ao=$("#aboutOkay"); if(ao) ao.onclick=closeSheet;
   }
 });
 
-$("#openBrowserToggle").onclick=e=>{e.stopPropagation();openBrowser=!openBrowser;syncSwitches();toast(openBrowser?"原链接将在浏览器中打开":"原链接将在应用内打开")};
-$("#systemThemeToggle").onclick=e=>{
+const systemThemeToggle=$("#systemThemeToggle");
+if(systemThemeToggle) systemThemeToggle.onclick=e=>{
   e.stopPropagation();
   systemTheme=!systemTheme;
-  if(systemTheme){
-    dark=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if(window.matchMedia)window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",ev=>{
-      if(systemTheme){dark=ev.matches;applyTheme();syncSwitches()}
-    });
-  }
-  syncSwitches();applyTheme();
+  syncSwitches();
+  applyTheme();
+  toast(systemTheme?"动态主题已开启（按壁纸取色演示）":"已关闭动态主题");
 };
 
 document.addEventListener("keydown",e=>{
