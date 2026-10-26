@@ -47,7 +47,7 @@ main{flex:1;min-height:0;overflow:hidden;padding-bottom:calc(63px + env(safe-are
 .recent-saves-heading{padding:0 20px 10px}
 .home-popular-heading{padding:16px 20px 10px}
 
-.recent-saves-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding:0 16px 10px 20px;scrollbar-width:none;overscroll-behavior-x:contain}
+.recent-saves-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding:0 16px 10px;scrollbar-width:none;overscroll-behavior-x:contain}
 .recent-saves-track::-webkit-scrollbar{display:none}
 .recent-save-card{
   flex:0 0 280px;width:280px;scroll-snap-align:start;
@@ -206,14 +206,3 @@ main{flex:1;min-height:0;overflow:hidden;padding-bottom:calc(63px + env(safe-are
 @media(prefers-reduced-motion:reduce){
   *,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
-
-/* Pocket UI refinements */
-.reader-actions-leading{margin-left:0}
-.reader-actions-leading .icon{width:40px}
-.reader-toolbar{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center}
-.reader-tool{min-height:42px;justify-content:center}
-.reader-listen-tool{color:var(--ink)}
-.reader-listen-tool .material-symbols-outlined{font-size:25px}
-.article-discover .article-bottom{justify-content:space-between}
-.article-discover .article-bottom .source{flex:1}
-.add-link-icon{flex-shrink:0}
