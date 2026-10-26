@@ -12,6 +12,9 @@ function toast(s){const t=$("#toast");t.textContent=s;t.classList.add("show");cl
 function favoriteButton(a){
   return '<button class="mini '+(a.favorite?'saved':'')+'" data-action="favorite" data-id="'+a.id+'" aria-label="收藏" title="收藏">'+heart(!!a.favorite)+'</button>';
 }
+function addLinkButton(a){
+  return '<button class="mini add-link-icon" data-action="add-link" data-id="'+a.id+'" aria-label="加入到保存内容" title="加入到保存内容"><span class="material-symbols-outlined">add_link</span></button>';
+}
 function moreButton(a){
   return '<button class="mini" data-action="more" data-id="'+a.id+'" aria-label="更多选项" title="更多选项">'+moreIcon+'</button>';
 }
@@ -76,6 +79,7 @@ function render(){
         '<h2 class="article-title">'+esc(a.title)+'</h2>'+ 
         '<div class="article-bottom">'+ 
           '<div class="source">'+esc(a.source)+'</div>'+ 
+          '<div class="tools">'+favoriteButton(a)+moreButton(a)+addLinkButton(a)+'</div>'+
         '</div>'+ 
       '</div>'+ 
       '<img class="thumb" src="'+a.image+'" alt="" loading="lazy">'+ 
@@ -176,8 +180,6 @@ function openReader(id){
     '<p style="font:11px Arial,sans-serif;color:var(--muted)">Sample reader text for interface testing.</p>';
   $("#reader").classList.add("open");
   $("#reader").scrollTop=0;
-  $("#readerPrev").style.display=readerArrows?"grid":"none";
-  $("#readerNext").style.display=readerArrows?"grid":"none";
   const ico=$("#readerSaveIcon");
   if(ico){ico.classList.toggle("filled",!!activeArticle.favorite)}
   render();
@@ -187,6 +189,7 @@ function action(type,id){
   const a=articles.find(x=>x.id===Number(id));
   if(!a)return;
   if(type==="favorite"){a.favorite=!a.favorite;toast(a.favorite?"已加入收藏":"已取消收藏");render()}
+  else if(type==="add-link"){toast("已加入保存内容")}
   else if(type==="more"){
     sheet("选项",
       '<div class="sheet-row" data-story="open">打开文章</div>'+
@@ -222,7 +225,6 @@ $("#overlay").onclick=e=>{if(e.target===$("#overlay"))closeSheet()};
 
 $("#featureCard").onclick=()=>openReader(1);
 const showAllSaves=()=>{filter="all";setPage("saves");render()};
-$("#seeAll").onclick=showAllSaves;
 $("#recentSeeAll").onclick=showAllSaves;
 $("#readerBack").onclick=()=>$("#reader").classList.remove("open");
 function navigateReader(delta){
@@ -240,21 +242,29 @@ $("#readerSave").onclick=()=>{
     render();
   }
 };
-$("#readerMore").onclick=()=>sheet("阅读设置",
-  '<div class="sheet-row"><span style="flex:1">字号</span><button class="chip" id="fontDown">A−</button><button class="chip" id="fontUp">A+</button></div>'+
-  '<div class="sheet-row"><span style="flex:1">主题</span><button class="chip" id="readerTheme">切换深色</button></div>'+
-  '<button class="primary" id="readerDone">完成</button>');
 $("#sheetBody").addEventListener("click",e=>{
   if(e.target.id==="readerDone")closeSheet();
   if(e.target.id==="fontDown"){fontSize=Math.max(14,fontSize-1);$("#readerContent").querySelectorAll("p").forEach(p=>p.style.fontSize=fontSize+"px")}
   if(e.target.id==="fontUp"){fontSize=Math.min(26,fontSize+1);$("#readerContent").querySelectorAll("p").forEach(p=>p.style.fontSize=fontSize+"px")}
   if(e.target.id==="readerTheme"){dark=!dark;applyTheme();e.target.textContent=dark?"切换浅色":"切换深色"}
 });
-$("#readerText").onclick=()=>$("#readerMore").click();
 $("#readerListen").onclick=()=>toast("音频播放不在本原型范围内");
-$("#readerShare").onclick=()=>{
-  if(navigator.share&&activeArticle)navigator.share({title:activeArticle.title,url:"https://example.com"}).catch(()=>{});
+function articleUrl(){return activeArticle?.url||"https://example.com";}
+function shareArticle(){
+  if(navigator.share&&activeArticle)navigator.share({title:activeArticle.title,url:articleUrl()}).catch(()=>{});
   else toast("分享预览");
+}
+$("#readerShareTop").onclick=shareArticle;
+$("#readerOriginal").onclick=()=>{
+  sheet("打开原链接",'<p style="color:var(--muted);line-height:1.6">选择用于打开原始网页的浏览器（网页预览仅展示选择交互）。</p>'+
+    '<button class="sheet-row browser-choice" data-browser="系统默认浏览器">系统默认浏览器</button>'+
+    '<button class="sheet-row browser-choice" data-browser="Chrome">Chrome</button>'+
+    '<button class="sheet-row browser-choice" data-browser="其他浏览器">其他浏览器</button>');
+  document.querySelectorAll(".browser-choice").forEach(b=>b.onclick=()=>{
+    $("#browserChoiceLabel").textContent=b.dataset.browser;
+    closeSheet();
+    window.open(articleUrl(),"_blank","noopener");
+  });
 };
 
 function applyTheme(){
@@ -271,7 +281,7 @@ function applyTheme(){
 }
 
 function syncSwitches(){
-  [["systemThemeToggle",systemTheme],["openBrowserToggle",openBrowser],["readerArrowsToggle",readerArrows]].forEach(([id,on])=>{
+  [["systemThemeToggle",systemTheme]].forEach(([id,on])=>{
     const b=$("#"+id);
     if(!b)return;
     b.classList.toggle("on",on);
@@ -304,14 +314,7 @@ $("#systemThemeToggle").onclick=e=>{
   }
   syncSwitches();applyTheme();
 };
-$("#openBrowserToggle").onclick=e=>{e.stopPropagation();openBrowser=!openBrowser;syncSwitches()};
-$("#readerArrowsToggle").onclick=e=>{
-  e.stopPropagation();
-  readerArrows=!readerArrows;
-  syncSwitches();
-  $("#readerPrev").style.display=readerArrows?"grid":"none";
-  $("#readerNext").style.display=readerArrows?"grid":"none";
-};
+
 
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){closeSheet();$("#reader").classList.remove("open")}
