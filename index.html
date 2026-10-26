@@ -1,1 +1,176 @@
-<PLACEHOLDER>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#191919">
+<title>Pocket — Android UI replica</title>
+<link rel="stylesheet" href="styles.css?v=d9e1f04">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<style>
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 22px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+</style>
+</head>
+<body>
+<div class="app demo-mode" id="app" data-page="home">
+<div class="status"><span id="clock">09:41</span><div class="status-right"><span>5G</span><span class="signal"><i></i><i></i><i></i><i></i></span><span class="battery"></span></div></div>
+
+<header class="topbar pocket-appbar">
+  <div class="topbar-title" id="topbarTitle">保存内容</div>
+  <div class="topbar-controls">
+    <button class="icon" id="searchBtn" aria-label="搜索"><span class="material-symbols-outlined">search</span></button>
+    <button class="icon" id="filterBtn" aria-label="筛选"><span class="material-symbols-outlined">filter_list</span></button>
+    <button class="icon" id="addTopBtn" aria-label="添加保存"><span class="material-symbols-outlined">add</span></button>
+  </div>
+</header>
+
+<main>
+<section class="page" id="page-saves">
+  <div class="saves-page-head" hidden>
+    <h1 class="page-title saves-title">保存内容</h1>
+  </div>
+  <div hidden><span id="listLabel">All saves</span><button id="sortBtn" type="button">Sort</button></div>
+  <div class="saves-empty">
+    <h2>开始建立您的 Pocket 列表</h2>
+    <p>保存您想稍后阅读的文章、视频和网页。</p>
+    <button class="empty-login" data-login>注册或登录</button>
+  </div>
+  <div class="article-list" id="articleList"></div>
+</section>
+
+<div hidden aria-hidden="true">
+  <button id="savesTab"></button><button id="archiveTab"></button>
+  <button id="searchToggle"></button><div id="searchWrap" hidden></div><button id="moreBtn"></button>
+  <span id="savesSubtitle"></span><span id="homeSavesCount"></span><span id="homeArchiveCount"></span>
+  <span id="settingsSavesCount"></span><span id="settingsArchiveCount"></span>
+  <span id="homeSavesExample"></span><span id="homeArchiveExample"></span>
+</div>
+
+<section class="page active" id="page-home">
+  <div class="home-title"><h1 class="page-title">主页</h1></div>
+  <section class="recent-saves-section">
+    <div class="section-row recent-saves-heading">
+      <span class="section-label">最近保存</span>
+      <button class="text-btn" id="recentSeeAll">查看全部 ›</button>
+    </div>
+    <div class="recent-saves-track" id="recentSavesList"></div>
+  </section>
+  <div class="section-row home-popular-heading">
+    <span class="section-label">AI精选</span>
+  </div>
+  <div class="feature" id="featureCard">
+    <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=80" alt="">
+    <div class="feature-overlay">
+      <div class="feature-tag">Editor's picks · 6 min read</div>
+      <div class="feature-title">A slower way to see the world</div>
+      <div class="feature-byline">Travel · Ideas for a thoughtful life</div>
+    </div>
+  </div>
+  <div class="article-list" id="discoverList"></div>
+</section>
+
+<section class="page" id="page-settings">
+  <div class="page-head settings-page-head"><h1 class="page-title">设置</h1></div>
+  <div class="settings">
+    <div class="group"><h3>应用程序设置</h3>
+      <div class="setting" data-setting="theme">
+        <span class="setting-icon"><span class="material-symbols-outlined">dark_mode</span></span>
+        <div class="setting-main"><div class="setting-title">主题</div><div class="setting-sub">选择浅色或深色主题</div></div>
+        <span class="trailing" id="themeLabel">深色</span>
+      </div>
+      <div class="setting setting-switch" data-setting="systemTheme">
+        <span class="setting-icon"><span class="material-symbols-outlined">devices</span></span>
+        <div class="setting-main"><div class="setting-title">匹配系统主题</div><div class="setting-sub">跟随设备的浅色或深色模式</div></div>
+        <button class="switch" id="systemThemeToggle" type="button" aria-pressed="false" aria-label="匹配系统主题"><span></span></button>
+      </div>
+    </div>
+    <div class="group"><h3>阅读</h3>
+      <div class="setting setting-switch" data-setting="openBrowser">
+        <span class="setting-icon"><span class="material-symbols-outlined">open_in_new</span></span>
+        <div class="setting-main"><div class="setting-title">在浏览器中打开原始网站</div><div class="setting-sub">点击原链接时使用系统浏览器打开</div></div>
+        <button class="switch on" id="openBrowserToggle" type="button" aria-pressed="true" aria-label="在浏览器中打开原始网站"><span></span></button>
+      </div>
+    </div>
+    <div class="group"><h3>通知</h3>
+      <div class="setting" data-setting="notifications">
+        <span class="setting-icon"><span class="material-symbols-outlined">notifications</span></span>
+        <div class="setting-main"><div class="setting-title">设备通知设置</div><div class="setting-sub">管理此设备上的应用通知</div></div>
+        <span class="trailing material-symbols-outlined" style="font-size:18px">chevron_right</span>
+      </div>
+    </div>
+    <div class="group"><h3>版本</h3>
+      <div class="setting" data-setting="version">
+        <span class="setting-icon"><span class="material-symbols-outlined">info</span></span>
+        <div class="setting-main"><div class="setting-title">版本信息</div><div class="setting-sub">Pocket UI · 网页交互示例</div></div>
+        <span class="trailing">1.0.0</span>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<nav class="nav" aria-label="Main navigation">
+  <button class="nav-item active" data-page="home">
+    <span class="material-symbols-outlined">home</span><span>主页</span>
+  </button>
+  <button class="nav-item" data-page="saves">
+    <span class="material-symbols-outlined">bookmark</span><span>保存内容</span>
+  </button>
+  <button class="nav-item" data-page="settings">
+    <span class="material-symbols-outlined">settings</span><span>设置</span>
+  </button>
+</nav>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="sheetTitle">Filter saves</div>
+      <button class="sheet-close" id="sheetClose" aria-label="Close">×</button>
+    </div>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<div class="reader" id="reader" role="dialog" aria-modal="true">
+  <div class="reader-top">
+    <button class="icon" id="readerBack" aria-label="Back"><span class="material-symbols-outlined">arrow_back</span></button>
+    <div class="reader-actions">
+      <button class="icon" id="readerShare" aria-label="分享"><span class="material-symbols-outlined">share</span></button>
+      <button class="icon" id="readerOriginal" aria-label="原链接"><span class="material-symbols-outlined">open_in_new</span></button>
+      <button class="icon" id="readerSave" aria-label="收藏"><span class="material-symbols-outlined" id="readerSaveIcon">favorite</span></button>
+      <button class="icon" id="readerMore" aria-label="阅读设置"><span class="material-symbols-outlined">tune</span></button>
+    </div>
+  </div>
+  <article class="reader-content" id="readerContent"></article>
+  <div class="reader-toolbar">
+    <button class="reader-tool" id="readerPrev" aria-label="上一篇"><span class="material-symbols-outlined">chevron_left</span><span>上一个</span></button>
+    <button class="reader-tool" id="readerListen"><span class="material-symbols-outlined">headphones</span><span>Listen</span></button>
+    <button class="reader-tool" id="readerNext" aria-label="下一篇"><span class="material-symbols-outlined">chevron_right</span><span>下一个</span></button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+</div>
+<div class="desktop-note"><strong>Pocket interface study</strong>A responsive prototype focused on original Android screen structure and interactions. Demo content only; no account or sync.</div>
+<script src="data.js?v=d9e1f04"></script>
+<script src="app.js?v=d9e1f04"></script>
+</body>
+</html>
